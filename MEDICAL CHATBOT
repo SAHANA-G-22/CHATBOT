@@ -1,0 +1,42 @@
+import os
+from groq import Groq
+
+
+api_key = "YOUR API_KEY"
+
+
+client = Groq(api_key=api_key)
+
+def medical_chat():
+    print(" Medical Assistant Chatbot (type 'exit' to stop)")
+    chat_history = [
+        {
+            "role": "system",
+            "content": (
+                "You are a knowledgeable medical assistant. "
+                "Give accurate, ethical, and responsible suggestions for health questions. "
+                "If the condition sounds severe, advise seeing a real doctor."
+            )
+        }
+    ]
+
+    while True:
+        user_input = input(" You: ")
+        if user_input.lower() == "exit":
+            print(" Bot: Take care! See you again.")
+            break
+
+        chat_history.append({"role": "user", "content": user_input})
+
+        response = client.chat.completions.create(
+            model="llama3-70b-8192",
+            messages=chat_history,
+            temperature=0.4
+        )
+
+        reply = response.choices[0].message.content
+        print(" Bot:", reply)
+
+        chat_history.append({"role": "assistant", "content": reply})
+
+medical_chat()
